@@ -10,13 +10,30 @@ const Home: React.FC = () => {
   };
   return (
     <>
-      <h1>Benvenuto nel nostro gioco</h1>
-      <h2>Puoi iniziare una nuova partita, o scegliere di giocare con il codice degli amici</h2>
-      <h3>inserisci il tuo nome</h3>
-      <input type="text" id="name" />
-      <ButtonComponent text="Inizia Nuova Partita" clickButton={newGame} />
-      <ButtonComponent text="Usa Codice" clickButton={codeGame} />
-      <input type="text" id="code" />
+      <div>
+        <h1>Benvenuto nel nostro gioco</h1>
+      </div>
+      <div>
+        <h2>
+          Puoi iniziare una nuova partita, o scegliere di giocare con il codice
+          degli amici
+        </h2>
+      </div>
+      <div>
+        <h3>inserisci il tuo nome</h3>
+      </div>
+      <div>
+        <input type="text" id="name" />
+      </div>
+      <div>
+        <ButtonComponent text="Inizia Nuova Partita" clickButton={newGame} />
+      </div>
+      <div>
+        <ButtonComponent text="Usa Codice" clickButton={codeGame} />
+      </div>
+      <div>
+        <input type="text" id="code" />
+      </div>
     </>
   );
 };
