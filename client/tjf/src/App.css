@@ -37,3 +37,14 @@
     transform: translateY(0px);
   }
 }
+
+.audio-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 30px; 
+  color: #333; 
+  cursor: pointer;
+  
+}
+  

@@ -1,8 +1,9 @@
 import React from "react";
 
+
 function ButtonComponent(props: any) {
   let type: "button" | "submit" | "reset" = props.type || "button";
-  let classList = ["btn", props.classBt || "btn-primary"];
+  let classList = ["button-19", props.classBt || "custom-btn-primary" || "input-text"];
   let text = props.text || "Salva";
   const clickHandler = (event: any) => {
     props.clickButton && props.clickButton(event);

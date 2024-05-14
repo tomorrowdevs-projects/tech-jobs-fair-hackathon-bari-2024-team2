@@ -1,3 +1,6 @@
+
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,9 +8,59 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+  
+    background: #00B4D8;
+    background-image: linear-gradient(45deg, rgba(255,255,255,.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.1) 50%, rgba(255,255,255,.1) 75%, transparent 75%, transparent);
+    background-size: 64px 64px;
+    animation: gradientAnimation 10s linear infinite;
+    
+  }
+    
+ 
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0 0; /* Posizione iniziale del background */
+    }
+    100% {
+      background-position: 100% 100%; /* Posizione finale del background */
+    }
+  }
+
+
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.logo{
+  
+    display: block; /* Assicura che l'immagine sia un blocco */
+    margin: 0 auto; /* Centra l'immagine rispetto al suo contenitore */
+    max-width: 20%; /* Limita la larghezza massima dell'immagine al 100% del contenitore */
+    height: auto; /* Impedisce la distorsione mantenendo l'aspetto proporzionale */
+    border-radius: 20%;
+    margin-top: 15px;
+  
+  
+}
+@media (max-width: 900px) {
+  
+  .logo{
+    max-width: 60%;
+    border-radius: 20%;
+  }
+
+  .h2home{
+  font-size:medium;
+  text-align: center;
+  margin: 15px;
+  
+  }
+}
+
+.input-text::placeholder {
+  text-align: center; /* Centra il testo del placeholder */
 }

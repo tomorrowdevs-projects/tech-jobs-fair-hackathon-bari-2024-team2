@@ -1,4 +1,4 @@
-.btn{
+.custom-btn{
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -14,10 +14,102 @@
     line-height: 1.5;
     border-radius: 0.25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    
+    
 }
 
-.btn-primary{
+.custom-btn-primary{
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
 }
+
+
+
+
+
+.button-19 {
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round,sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  margin: 10px;
+  outline: none;
+  overflow: visible;
+  padding: 10px 12px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+  
+
+@media (max-width: 600px) {
+    .button-19 {
+      font-size: 12px; /* Ridotto il font-size */
+      padding: 8px 10px; /* Ridotto il padding */
+    }
+  }
+
+.button-19:after {
+  background-clip: padding-box;
+  background-color: #1CB0F6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.button-19:main,
+.button-19:focus {
+  user-select: auto;
+}
+
+.button-19:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.button-19:disabled {
+  cursor: auto;
+}
+
+.button-19:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+
+.input-text{
+    background-color: #1899D6;
+    color: black;
+    font-size: larger;
+    font-weight: bolder;
+    margin: 15px;
+    border-radius: 16px;
+}
+
+
