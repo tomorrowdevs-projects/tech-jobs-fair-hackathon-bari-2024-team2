@@ -47,6 +47,8 @@ const Game: React.FC = () => {
 
   return (
     <>
+      <CountDown timeRunOut={setTime} ></CountDown>
+
       <Question onAnswerSubmit={handleAnswerSubmit} />
       <h1>Sono la pagina Game e ho un bottone</h1>
     </>
