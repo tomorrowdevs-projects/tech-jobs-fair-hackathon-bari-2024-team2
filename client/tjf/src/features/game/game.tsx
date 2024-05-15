@@ -1,5 +1,6 @@
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import React from "react";
+import "../../index.css";
 
 const Game: React.FC = () => {
   const azioneUno = () => {
@@ -7,7 +8,7 @@ const Game: React.FC = () => {
   };
   return (
     <>
-      <h1>Sono la page Game ed ho un bottone</h1>
+      <h1  style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>Sono la page Game ed ho un bottone</h1>
       <ButtonComponent text="Azione Game" clickButton={azioneUno} />
     </>
   );
