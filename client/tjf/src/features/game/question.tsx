@@ -2,53 +2,53 @@ import React, { useState } from "react";
 import QuestionModel from "./model/questionModel";
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
 
-const Question: React.FC = () => {
-  const azioneUno = () => {
-    console.log("Sono Azione Question");
-  };
-  const quenstionForUser: QuestionModel = {
+const Question: React.FC<{ onAnswerSubmit: (answer: string) => void }> = (props) => {  
+  const questionForUser: QuestionModel = {
     type: "multiple",
     question: "When someone is inexperienced they are said to be what color?",
     answer: ["Green", "Red", "Blue", "Yellow"],
   };
 
-  const [answerQuestion, setAnswerQuestion] = useState(null);
+  const [answerQuestion, setAnswerQuestion] = useState<string | null>(null);
 
-  const onValueChange = (event: any) => {
+  const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnswerQuestion(event.target.value);
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(answerQuestion);
+    if (answerQuestion !== null) {
+      props.onAnswerSubmit(answerQuestion);
+    }    
   };
 
   return (
     <>
-      <div>
-        <div>
+      <div className="question-container">
+        <div className="question-header">
           <h3>Ecco la tua domanda!</h3>
         </div>
-        <div>
-          <h4>{quenstionForUser.question}</h4>
+        <div className="question-content">
+          <h4>{questionForUser.question}</h4>
         </div>
       </div>
       <div>
-        <div>
+        <div className="answer-section">
           <h3>Scegli la tua risposta</h3>
         </div>
         <div>
-          <form onSubmit={handleSubmit} action="" method="post">
-            <ul>
-              {quenstionForUser.answer.map((question, index) => (
-                <li key={index}>
+          <form onSubmit={handleSubmit} className="answer-form">
+            <ul className="answer-list">
+              {questionForUser.answer.map((question, index) => (
+                <li key={index} className="answer-item">
                   <label>
                     <input
                       type="radio"
                       value={question}
-                      onChange={onValueChange}
+                      checked={answerQuestion === question}
+                      onChange={handleValueChange}
                       name="question"
-                    ></input>
+                    />
                     {question}
                   </label>
                 </li>
