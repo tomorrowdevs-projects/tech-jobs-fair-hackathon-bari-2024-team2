@@ -2,22 +2,19 @@ import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-
 const NewGame: React.FC = () => {
   const azioneUno = () => {
     console.log("Sono Azione NewGame");
   };
 
-  
   const name = "nome";
 
-  const handleSubmit1 = (
-    data:any) => {
+  const matchRequest = (data: any) => {
     setData(JSON.stringify(data));
-    console.log('Form submitted:');
+    console.log("Form submitted:");
     console.log(data);
-  }
-  const { register , handleSubmit} = useForm();
+  };
+  const { register, handleSubmit } = useForm();
   const [data, setData] = useState("");
 
   return (
@@ -27,13 +24,15 @@ const NewGame: React.FC = () => {
         Ti ricordiamo che puoi fare delle scelte o lasciare le impostazioni come
         le vedi
       </h3>
-      <form 
-      onSubmit={handleSubmit((data:any) => {handleSubmit1(data)})} 
-      action="" method="post">
+      <form
+        onSubmit={handleSubmit((data: any) => {
+          matchRequest(data);
+        })}
+        action=""
+        method="post"
+      >
         <label htmlFor="category">Seleziona la categoria</label>
-        <select 
-        {...register("category")} 
-        name="category">
+        <select {...register("category")} name="category">
           <option value="any">Any Category</option>
           <option value="9">General Knowledge</option>
           <option value="10">Entertainment: Books</option>
@@ -62,8 +61,6 @@ const NewGame: React.FC = () => {
             Entertainment: Cartoon &amp; Animations
           </option>{" "}
         </select>
-        
-
 
         <label htmlFor="difficulty">Select Difficulty: </label>
         <select {...register("difficulty")} name="difficulty">
@@ -74,7 +71,7 @@ const NewGame: React.FC = () => {
         </select>
 
         <label htmlFor="type">Select Type: </label>
-        <select {...register("type")}  name="type">
+        <select {...register("type")} name="type">
           <option value="any">Any Type</option>
           <option value="multiple">Multiple Choice</option>
           <option value="boolean">True / False</option>
