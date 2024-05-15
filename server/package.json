@@ -1,0 +1,14 @@
+{
+  "name": "quizserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.17.0"
+  }
+}
