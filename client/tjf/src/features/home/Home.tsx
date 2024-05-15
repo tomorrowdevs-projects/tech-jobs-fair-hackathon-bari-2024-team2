@@ -1,18 +1,15 @@
-// Home.tsx
-
-//import React from "react";
+import React, { useEffect } from "react";
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import "../../shared/design/button/button.scss";
 import "../../index.css";
-//import React, { useRef } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
-import React, { useRef, useEffect, useState } from "react";
+//import WebSocket from "ws";
 
 const Home: React.FC = () => {
-  const audioRef = useRef<HTMLAudioElement>(null);
-
+  const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
+  const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
   const toggleAudio = () => {
     setIsAudioMuted((prevState) => !prevState);
@@ -25,13 +22,10 @@ const Home: React.FC = () => {
     }
   };
 
-  const [ipAddress, setIpAddress] = useState("");
-
   const fetcIP = async () => {
     try {
       const response = await fetch("https://api.ipify.org");
       const data = await response.text();
-      setIpAddress(data);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -40,14 +34,39 @@ const Home: React.FC = () => {
 
   const newGame = () => {
     console.log("Sono Azione Uno");
+    // Verifica se la connessione WebSocket è aperta e webSocket non è null
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      // Invia un messaggio al server
+      webSocket.send("Nuova partita avviata!");
+    } else {
+      console.error("Connessione WebSocket non disponibile o non aperta.");
+    }
   };
-
   const codeGame = () => {
     console.log("Sono Azione Due");
   };
 
   useEffect(() => {
     fetcIP();
+
+    const ws = new WebSocket("ws://localhost:8080");
+
+    ws.onopen = () => {
+      console.log("Connessione WebSocket aperta nella pagina Home");
+      setWebSocket(ws);
+    };
+
+    ws.onmessage = (event) => {
+      console.log("Messaggio ricevuto dal server WebSocket nella pagina Home:", event.data);
+    };
+
+    ws.onclose = () => {
+      console.log("Connessione WebSocket chiusa nella pagina Home");
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
   return (
@@ -84,13 +103,10 @@ const Home: React.FC = () => {
             alignItems: "center",
           }}
         >
-          inizia una nuova partita o inserisci un codice per entrare in una
-          stanza
+          Inizia una nuova partita o inserisci un codice per entrare in una stanza
         </h2>
       </div>
-      {/* <div>
-        <h3>inserisci il tuo nome</h3>
-      </div> */}
+
       <div
         style={{
           display: "flex",
@@ -105,6 +121,7 @@ const Home: React.FC = () => {
           placeholder="Inserisci Nome"
         />
       </div>
+
       <div
         style={{
           display: "flex",
@@ -112,13 +129,13 @@ const Home: React.FC = () => {
           alignItems: "center",
         }}
       >
-        {/* Passa le classi CSS come prop al componente ButtonComponent */}
         <ButtonComponent
           text="Inizia Nuova Partita"
           clickButton={newGame}
           classNames="custom-btn custom-btn-primary button-19"
         />
       </div>
+
       <div
         style={{
           display: "flex",
@@ -133,6 +150,7 @@ const Home: React.FC = () => {
           placeholder="Codice partita"
         />
       </div>
+
       <div
         style={{
           display: "flex",
@@ -140,7 +158,6 @@ const Home: React.FC = () => {
           alignItems: "center",
         }}
       >
-        {/* Passa le classi CSS come prop al componente ButtonComponent */}
         <ButtonComponent
           text="Usa Codice"
           clickButton={codeGame}
