@@ -3,10 +3,19 @@ import React, { useState } from "react";
 import Question from "./question";
 import "../../App.css";
 
+import CountDown from "./countDown";
 
 const Game: React.FC = () => {
   const [userAnswer, setUserAnswer] = useState<string | null>(null);
-  const [timeOut, setTimeOut] = useState<boolean> (false);
+  const [hasTimeRunOut, setHasTimeRunOut] = useState<boolean>(false);
+
+  const setTime = ()=> {
+    setHasTimeRunOut(!hasTimeRunOut);
+    console.log("hasTimeRunOut");
+    console.log(hasTimeRunOut);
+    
+  }
+
   const azioneUno = () => {
     console.log("Sono Azione Game");
   };
@@ -19,7 +28,10 @@ const Game: React.FC = () => {
 
   return (
     <>
+      <CountDown timeRunOut={setTime} ></CountDown>
+
       <Question onAnswerSubmit={handleAnswerSubmit} />
+
       <h1>Sono la page Game ed ho un bottone</h1>
       {/* <ButtonComponent text="Azione Game" clickButton={azioneUno} /> */}
     </>
