@@ -10,6 +10,8 @@ const Home: React.FC = () => {
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
+  const [userName, setUserName] = React.useState<string | null>(null);
+  const [addressIp, setAddressIp] = React.useState<string | null>(null);
 
   const toggleAudio = () => {
     setIsAudioMuted((prevState) => !prevState);
@@ -32,14 +34,25 @@ const Home: React.FC = () => {
     }
   };
 
-  const newGame = () => {
-    console.log("Sono Azione Uno");
-    // Verifica se la connessione WebSocket è aperta e webSocket non è null
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      // Invia un messaggio al server
-      webSocket.send("Nuova partita avviata!");
-    } else {
-      console.error("Connessione WebSocket non disponibile o non aperta.");
+  const newGame = (e: any) => {
+    // console.log("Sono Azione Uno");
+    if (userName === null) alert("e' necessario inserire un nome");
+    else {
+      const objToServer = {
+        msg: `request for a new game`,
+        userName,
+        addressIp,
+      }
+      // console.log('objToServer');
+      // console.log(objToServer);
+      
+      // Verifica se la connessione WebSocket è aperta e webSocket non è null
+      if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+        // Invia un messaggio al server
+        webSocket.send(JSON.stringify(objToServer));
+      } else {
+        console.error("Connessione WebSocket non disponibile o non aperta.");
+      }
     }
   };
   const codeGame = () => {
@@ -57,7 +70,12 @@ const Home: React.FC = () => {
     };
 
     ws.onmessage = (event) => {
-      console.log("Messaggio ricevuto dal server WebSocket nella pagina Home:", event.data);
+      const questionsForUser = JSON.parse(event.data)
+
+      console.log(
+        "Messaggio ricevuto dal server WebSocket nella pagina Home:",
+        questionsForUser
+      );
     };
 
     ws.onclose = () => {
