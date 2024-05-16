@@ -40,10 +40,11 @@ const Home: React.FC = () => {
     if (userName === null) alert("e' necessario inserire un nome");
     else {
       const objToServer = {
-        msg: `join`,
+        typeRequest: `join`,
         userName,
         addressIp,
       }
+      
       // console.log('objToServer');
       // console.log(objToServer);
       
@@ -71,11 +72,11 @@ const Home: React.FC = () => {
     };
 
     ws.onmessage = (event) => {
-      const questionsForUser = JSON.parse(event.data)
+      const infoForUser = JSON.parse(event.data);
 
       console.log(
         "Messaggio ricevuto dal server WebSocket nella pagina Home:",
-        questionsForUser
+        infoForUser
       );
     };
 
