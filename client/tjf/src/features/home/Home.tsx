@@ -12,7 +12,6 @@ const Home: React.FC = () => {
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
   const [userName, setUserName] = React.useState<string | null>(null);
   const [addressIp, setAddressIp] = React.useState<string | null>(null);
-  const [testED, setTestED] = React.useState<string | null>(null);
 
   const toggleAudio = () => {
     setIsAudioMuted((prevState) => !prevState);
@@ -43,7 +42,7 @@ const Home: React.FC = () => {
       const objToServer = {
         msg: `request for a new game`,
         userName,
-        addressIp
+        addressIp,
       }
       // console.log('objToServer');
       // console.log(objToServer);
@@ -72,15 +71,11 @@ const Home: React.FC = () => {
     };
 
     ws.onmessage = (event) => {
-      //console.log("event");
-      //console.log(typeof event);
-      //console.log(event);
-
-      setTestED(event.data)
+      const questionsForUser = JSON.parse(event.data)
 
       console.log(
         "Messaggio ricevuto dal server WebSocket nella pagina Home:",
-        event.data
+        questionsForUser
       );
     };
 
@@ -148,7 +143,6 @@ const Home: React.FC = () => {
             setUserName(e.target.value);
           }}
         />
-        <h4>{testED}</h4>
       </div>
 
       <div
