@@ -28,7 +28,8 @@ const Home: React.FC = () => {
     try {
       const response = await fetch("https://api.ipify.org");
       const data = await response.text();
-      console.log(data);
+      setAddressIp(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
     if (userName === null) alert("e' necessario inserire un nome");
     else {
       const objToServer = {
-        msg: `request for a new game`,
+        msg: `join`,
         userName,
         addressIp,
       }
@@ -132,11 +133,14 @@ const Home: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <input
+       <input
           type="text"
           id="name"
           className="input-text"
           placeholder="Inserisci Nome"
+          onChange={(e: any) => {
+            setUserName(e.target.value);
+          }}
         />
       </div>
 

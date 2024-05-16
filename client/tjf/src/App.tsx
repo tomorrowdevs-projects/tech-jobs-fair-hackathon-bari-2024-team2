@@ -1,4 +1,4 @@
-import { Counter } from "./features/counter/Counter";
+import  Counter  from "./features/counter/Counter";
 import "./App.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import React from "react";
