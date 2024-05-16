@@ -1,14 +1,13 @@
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Question from "./question";
 import "../../App.css";
-import CountDown from "./countDown";
-//import WebSocket from "ws";
+import Counter from "../counter/Counter";
 
 const Game: React.FC = () => {
   const [userAnswer, setUserAnswer] = useState<string | null>(null);
   const [timeOut, setTimeOut] = useState<boolean>(false);
-  const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
+  const webSocket = useRef<WebSocket | null>(null);
 
   // Creazione della connessione WebSocket quando il componente viene montato
   useEffect(() => {
@@ -17,7 +16,7 @@ const Game: React.FC = () => {
     // Gestione degli eventi WebSocket
     ws.onopen = () => {
       console.log("Connessione WebSocket aperta");
-      setWebSocket(ws);
+      webSocket.current = ws;
     };
 
     ws.onmessage = (event) => {
@@ -31,8 +30,8 @@ const Game: React.FC = () => {
 
     // Cleanup
     return () => {
-      if (webSocket) {
-        webSocket.close();
+      if (webSocket.current) {
+        webSocket.current.close();
       }
     };
   }, []); // Esegui una sola volta durante il montaggio del componente
@@ -40,21 +39,21 @@ const Game: React.FC = () => {
   // Funzione per inviare una risposta al server tramite WebSocket
   const handleAnswerSubmit = (answer: string | null) => {
     setUserAnswer(answer);
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ answer: answer }));
+    if (webSocket.current && webSocket.current.readyState === WebSocket.OPEN) {
+      webSocket.current.send(JSON.stringify({ answer: answer }));
     }
     console.log("Risposta inviata al server:", answer);
   };
 
-  const setTime = () => {
-    setTimeOut(!timeOut);
-    console.log("hasTimeRunOut");
-    console.log(timeOut);
+  // Funzione per impostare il timeout
+  const setTime = (value: boolean) => {
+    setTimeOut(value);
+    console.log("hasTimeRunOut:", value);
   };
 
   return (
     <>
-      <CountDown timeRunOut={setTime}></CountDown>
+      <Counter timeRunOut={setTime} />
 
       <Question onAnswerSubmit={handleAnswerSubmit} />
       <h1>Sono la pagina Game e ho un bottone</h1>
