@@ -1,5 +1,16 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
-  }
+  "version": 2,
+
+  "routes": [
+    {
+      "src": "/api/(.*)", 
+      "dest": "server/server.js" 
+    },
+    {
+      "src": "/(.*)", 
+      "dest": "client/tjf/$1"
+    }
+  ]
+}
+
+
