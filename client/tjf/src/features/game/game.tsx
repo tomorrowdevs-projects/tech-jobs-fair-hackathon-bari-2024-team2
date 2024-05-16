@@ -1,7 +1,8 @@
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Question from "./question";
 import "../../App.css";
+import CountDown from "./countDown";
 //import WebSocket from "ws";
 
 const Game: React.FC = () => {
@@ -45,9 +46,15 @@ const Game: React.FC = () => {
     console.log("Risposta inviata al server:", answer);
   };
 
+  const setTime = () => {
+    setTimeOut(!timeOut);
+    console.log("hasTimeRunOut");
+    console.log(timeOut);
+  };
+
   return (
     <>
-      <CountDown timeRunOut={setTime} ></CountDown>
+      <CountDown timeRunOut={setTime}></CountDown>
 
       <Question onAnswerSubmit={handleAnswerSubmit} />
       <h1>Sono la pagina Game e ho un bottone</h1>
