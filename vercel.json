@@ -1,5 +1,25 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/server.js", 
+      "use": "@vercel/node" 
+    },
+    {
+      "src": "client/tjf/package.json", 
+      "use": "@vercel/static-build" 
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)", 
+      "dest": "server/server.js" 
+    },
+    {
+      "src": "/(.*)", 
+      "dest": "client/tjf/$1"
+    }
+  ]
+}
+
+
