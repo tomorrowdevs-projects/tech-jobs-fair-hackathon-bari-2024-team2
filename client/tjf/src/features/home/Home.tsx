@@ -24,7 +24,7 @@ const Home: React.FC = () => {
     }
   };
 
-  const fetcIP = async () => {
+  const fetchIP = async () => {
     try {
       const response = await fetch("https://api.ipify.org");
       const data = await response.text();
@@ -62,7 +62,7 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    fetcIP();
+    fetchIP();
 
     const ws = new WebSocket("ws://localhost:8080");
 

@@ -65,7 +65,7 @@ const Game: React.FC = () => {
     }
     console.log("Risposta inviata al server:", answer);
   };
-  const fetcIP = async () => {
+  const fetchIP = async () => {
     try {
       const response = await fetch("https://api.ipify.org");
       const data = await response.text();
