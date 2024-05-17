@@ -3,6 +3,7 @@ import "./App.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import React from "react";
 import Home from "./features/home/Home";
+import AppTJ from "./features/prova/app";
 import Game from "./features/game/game";
 import NewGame from "./features/newgame/NewGame";
 
