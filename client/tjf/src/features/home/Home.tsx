@@ -11,7 +11,7 @@ import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import ContDown from "../game/countDown";
 //import WebSocket from "ws";
 
-const ws2 = new WebSocket("ws://localhost:8080");
+// const ws2 = new WebSocket("ws://localhost:8080");
 
 interface userModel {
   id: string;
@@ -37,6 +37,8 @@ const Home: React.FC = () => {
   const [score, setScore] = useState(0);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
+  const [questionIndex, setQuestionIndex] = React.useState();
+  const [isGameStart, setIsGameStart] = React.useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
@@ -57,24 +59,24 @@ const Home: React.FC = () => {
         console.log("onmessage--------------");
 
         const data = JSON.parse(event.data);
-        console.log('question');
-        console.log(question);
-        console.log('rankings');
-        console.log(rankings);
-        
-        console.log(data);
 
         switch (data.type) {
           case "connected":
+            console.log("connected");
+
             setUserId(data.userId);
             break;
           case "error":
             toast.error(data.message);
             break;
           case "master":
+            console.log("master");
+
             setMaster(true);
             break;
           case "start-enabled":
+            console.log("start-enabled");
+
             setStartEnabled(true);
             break;
           case "userList":
@@ -84,11 +86,16 @@ const Home: React.FC = () => {
 
             break;
           case "question":
+            console.log('question----------------------------');
+            setIsGameStart(true);
             setQuestion(data.question);
+            setQuestionIndex(data.questionIndex);
             setChoices(data.choices);
             setSelectedAnswer("");
             break;
           case "score":
+            console.log("score");
+
             if (data.userId === userId) {
               setScore(data.score);
               toast.info(`Your score for this question: ${data.score}`);
@@ -127,28 +134,30 @@ const Home: React.FC = () => {
 
   const handleStartGame = () => {
     if (master) {
-      ws2.send(
-        JSON.stringify({
-          type: "start",
-          userId,
-          category: "any",
-          difficulty: "any",
-          qtype: "any",
-        })
-      );
+      webSocket &&
+        webSocket.send(
+          JSON.stringify({
+            type: "start",
+            userId,
+            category: "any",
+            difficulty: "any",
+            qtype: "any",
+          })
+        );
     }
   };
 
   const handleAnswerSubmit = (choice: any) => {
     setSelectedAnswer(choice);
-    ws2.send(
-      JSON.stringify({
-        type: "answer",
-        userId,
-        answer: choice,
-        questionIndex: "questionIndex",
-      })
-    );
+    webSocket &&
+      webSocket.send(
+        JSON.stringify({
+          type: "answer",
+          userId,
+          answer: choice,
+          questionIndex: questionIndex,
+        })
+      );
   };
 
   const toggleAudio = () => {
@@ -162,11 +171,11 @@ const Home: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (event:any) => {
-    if(event.key === 'Enter'){
+  const handleKeyPress = (event: any) => {
+    if (event.key === "Enter") {
       handleSetUsername();
     }
-  }
+  };
 
   return (
     <>
@@ -204,7 +213,9 @@ const Home: React.FC = () => {
           </div>
         )}
 
-        {username && (
+        {(username 
+        && !isGameStart
+      ) && (
           <div>
             <h1>Welcome, {username}</h1>
             <div>
@@ -215,9 +226,7 @@ const Home: React.FC = () => {
                   <li key={user.id}>{user.username}</li>
                 ))}
               </ul>
-              {master && 
-              rankings.length < 1 && 
-              (
+              {master && (
                 <div>
                   <button onClick={handleStartGame} disabled={!startEnabled}>
                     Start Game
@@ -230,7 +239,10 @@ const Home: React.FC = () => {
         )}
         {question && (
           <div>
+            <h2>Domanda Numero {questionIndex}++</h2>
+            <div></div>
             <h2>{question}</h2>
+            <div></div>
             <ul>
               {choices.map((choice) => (
                 <li key={choice}>
