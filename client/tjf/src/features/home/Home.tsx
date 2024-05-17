@@ -39,6 +39,7 @@ const Home: React.FC = () => {
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
   const [questionIndex, setQuestionIndex] = React.useState<number>(0);
   const [isGameStart, setIsGameStart] = React.useState(false);
+  const [onCountDown, setOnCountDown] = useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
@@ -62,7 +63,7 @@ const Home: React.FC = () => {
 
         switch (data.type) {
           case "connected":
-            console.log("connected");
+            // console.log("connected");
 
             setUserId(data.userId);
             break;
@@ -70,12 +71,12 @@ const Home: React.FC = () => {
             toast.error(data.message);
             break;
           case "master":
-            console.log("master");
+            // console.log("master");
 
             setMaster(true);
             break;
           case "start-enabled":
-            console.log("start-enabled");
+            // console.log("start-enabled");
 
             setStartEnabled(true);
             break;
@@ -86,7 +87,9 @@ const Home: React.FC = () => {
 
             break;
           case "question":
-            console.log('question----------------------------');
+            console.log("question----------------------------");
+            setOnCountDown(true);
+            console.log(data);
             setIsGameStart(true);
             setQuestion(data.question);
             setQuestionIndex(data.questionIndex);
@@ -94,14 +97,20 @@ const Home: React.FC = () => {
             setSelectedAnswer("");
             break;
           case "score":
-            console.log("score");
+            // console.log("score");
 
-            if (data.userId === userId) {
+            if (data.userId == userId) {
               setScore(data.score);
               toast.info(`Your score for this question: ${data.score}`);
+              console.log("data.score");
+              console.log(data.score);
             }
             break;
           case "ranking":
+            setOnCountDown(false);
+            console.log("ranking");
+            console.log(data);
+
             setRankings(data.rankings);
             break;
           default:
@@ -195,8 +204,7 @@ const Home: React.FC = () => {
         </div>
 
         <ToastContainer />
-        {/* <ContDown></ContDown> */}
-
+        {onCountDown && <ContDown></ContDown>}
         {!connected && <p>Connecting to server...</p>}
         {connected && !userId && (
           // && !username
@@ -213,9 +221,7 @@ const Home: React.FC = () => {
           </div>
         )}
 
-        {(username 
-        && !isGameStart
-      ) && (
+        {username && !isGameStart && (
           <div>
             <h1>Welcome, {username}</h1>
             <div>
@@ -239,7 +245,10 @@ const Home: React.FC = () => {
         )}
         {question && (
           <div>
-            <h2>Domanda Numero {questionIndex && questionIndex === 0? 1: questionIndex + 1}</h2>
+            <h2>
+              Domanda Numero{" "}
+              {questionIndex && questionIndex === 0 ? 1 : questionIndex + 1}
+            </h2>
             <div></div>
             <h2>{question}</h2>
             <div></div>
