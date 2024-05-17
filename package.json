@@ -1,9 +1,9 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "server2.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node server2.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
