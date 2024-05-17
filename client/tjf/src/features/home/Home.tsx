@@ -271,6 +271,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="answer-section">
+          <h2>Question number {questionIndex && questionIndex + 1}</h2>
           <h3>Choose your answer</h3>
           </div>
 
