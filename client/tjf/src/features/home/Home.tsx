@@ -284,7 +284,7 @@ const Home: React.FC = () => {
 
             <ul className="answer-list">
               {choices.map((choice) => (
-                <li key={choice} className="answer-item">
+                <li key={choice} className="answer-item freeman-regular freeman-regular-answer">
                   <button
                     className="text-button-custom"
                     onClick={() => handleAnswerSubmit(choice)}
@@ -301,11 +301,11 @@ const Home: React.FC = () => {
         {/* RANKING SECTION */}
 
         {rankings.length > 0 && (
-          <div>
+          <div className="rankings-container">
             <h2>Rankings</h2>
             <ul className="rankings-list">
               {rankings.map((rank: rankModel, index) => (
-                <li key={rank.userId}>
+                <li key={rank.userId} className="rankings-item freeman-regular">
                   {index + 1}. {rank.username}: {rank.score}
                 </li>
               ))}
@@ -314,13 +314,13 @@ const Home: React.FC = () => {
         )}
       </div>
 
-      <div>
+      {/* <div>
         <footer>
           <div className="footer-content">
             <p>tech-jobs-fair-hackathon-bari-2024-team2</p>
           </div>
         </footer>
-      </div>
+      </div> */}
 
       {/* end div className="App" */}
     </>

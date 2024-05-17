@@ -11,14 +11,14 @@ const ContDown: React.FC<{
   const renderTime = ({ remainingTime }: any) => {
     if (remainingTime === 0) {
         // props.timeRunOut();
-      return <div className="timer">Too lale...</div>;
+      return <div className="timer">Too late...</div>;
     }
 
     return (
       <div className="timer">
-        <div className="text">Remaining</div>
+        <div className="text countdowntext">Remaining</div>
         <div className="value">{remainingTime}</div>
-        <div className="text">seconds</div>
+        <div className="text countdowntext">seconds</div>
       </div>
     );
   };
