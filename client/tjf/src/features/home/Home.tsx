@@ -39,6 +39,7 @@ const Home: React.FC = () => {
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
   const [questionIndex, setQuestionIndex] = React.useState<number>(0);
   const [isGameStart, setIsGameStart] = React.useState(false);
+  const [onCountDown, setOnCountDown] = useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
@@ -62,7 +63,7 @@ const Home: React.FC = () => {
 
         switch (data.type) {
           case "connected":
-            console.log("connected");
+            // console.log("connected");
 
             setUserId(data.userId);
             break;
@@ -70,12 +71,12 @@ const Home: React.FC = () => {
             toast.error(data.message);
             break;
           case "master":
-            console.log("master");
+            // console.log("master");
 
             setMaster(true);
             break;
           case "start-enabled":
-            console.log("start-enabled");
+            // console.log("start-enabled");
 
             setStartEnabled(true);
             break;
@@ -86,7 +87,9 @@ const Home: React.FC = () => {
 
             break;
           case "question":
-            console.log('question----------------------------');
+            console.log("question----------------------------");
+            setOnCountDown(true);
+            console.log(data);
             setIsGameStart(true);
             setQuestion(data.question);
             setQuestionIndex(data.questionIndex);
@@ -94,14 +97,20 @@ const Home: React.FC = () => {
             setSelectedAnswer("");
             break;
           case "score":
-            console.log("score");
+            // console.log("score");
 
-            if (data.userId === userId) {
+            if (data.userId == userId) {
               setScore(data.score);
               toast.info(`Your score for this question: ${data.score}`);
+              console.log("data.score");
+              console.log(data.score);
             }
             break;
           case "ranking":
+            setOnCountDown(false);
+            console.log("ranking");
+            console.log(data);
+
             setRankings(data.rankings);
             break;
           default:
@@ -195,13 +204,11 @@ const Home: React.FC = () => {
         </div> */}
 
         <ToastContainer />
-        {/* <ContDown></ContDown> */}
-
+        {onCountDown && <ContDown></ContDown>}
         {!connected && <p>Connecting to server...</p>}
         {connected && !userId && (
           // && !username
           <div className="centered-container">
-            
             <input
               type="text"
               placeholder="Enter your username"
@@ -211,28 +218,27 @@ const Home: React.FC = () => {
               }}
               className="styled-input"
             />
-          
-            <button onClick={handleSetUsername} className="button-19">Join Game</button>
+
+            <button onClick={handleSetUsername} className="button-19">
+              Join Game
+            </button>
           </div>
         )}
 
-        {(username 
-        && !isGameStart
-      ) && (
+        {username && !isGameStart && (
           <div>
             <h1>Welcome, {username}</h1>
 
-
             <div>
-
-
-            {master && 
-              rankings.length < 1 && 
-              (
+              {master && rankings.length < 1 && (
                 <div className="centered-container">
-                  <button className="button-19" onClick={handleStartGame} disabled={!startEnabled}>
+                  <button
+                    className="button-19"
+                    onClick={handleStartGame}
+                    disabled={!startEnabled}
+                  >
                     Start Game
-                  </button> 
+                  </button>
                   {!startEnabled && <p>Waiting for more players to join...</p>}
                 </div>
               )}
@@ -244,62 +250,51 @@ const Home: React.FC = () => {
                   <li key={user.id}>{user.username}</li>
                 ))}
               </ul>
-
-
-
-
-             
-
             </div>
-            
           </div>
         )}
 
-          {/* QUESTION SECTION */}
+        {/* QUESTION SECTION */}
 
         {question && (
           <div>
+            <h3
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "30px",
+              }}
+            >
+              Question number{" "}
+              {questionIndex && questionIndex === 0 ? 1 : questionIndex + 1}
+            </h3>
 
-              <h3 
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            fontSize: "30px",
-          }}>Question number {questionIndex && questionIndex === 0? 1: questionIndex + 1}</h3>
-          
+            <div className="question-container">
+              <div className="question-header"></div>
 
-
-           <div className="question-container">
-
-            <div className="question-header">
-              
+              <div className="question-content">
+                <h4>{question}</h4>
+              </div>
             </div>
 
-            <div className="question-content">
-
-              <h4>{question}</h4>
+            <div className="answer-section">
+              <h3>Choose your answer</h3>
             </div>
 
-          </div>
-
-          <div className="answer-section">
-          
-          <h3>Choose your answer</h3>
-          </div>
-
-              <ul className="answer-list">
-                {choices.map((choice) => (
-                  <li key={choice} className="answer-item">
-                    <button className="text-button-custom"
-                      onClick={() => handleAnswerSubmit(choice)}
-                      disabled={!!selectedAnswer}
-                    >
-                      {choice}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <ul className="answer-list">
+              {choices.map((choice) => (
+                <li key={choice} className="answer-item">
+                  <button
+                    className="text-button-custom"
+                    onClick={() => handleAnswerSubmit(choice)}
+                    disabled={!!selectedAnswer}
+                  >
+                    {choice}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
@@ -320,27 +315,16 @@ const Home: React.FC = () => {
       </div>
 
       <div>
-<footer>
-<div className="footer-content">
-<p>tech-jobs-fair-hackathon-bari-2024-team2</p>
+        <footer>
+          <div className="footer-content">
+            <p>tech-jobs-fair-hackathon-bari-2024-team2</p>
+          </div>
+        </footer>
+      </div>
 
-</div>
-</footer>
-</div>
-      
       {/* end div className="App" */}
-     
-      
     </>
-    
   );
-
-
 };
-
-
-
-
-
 
 export default Home;
