@@ -1,7 +1,11 @@
 import React from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import ReactDOM from "react-dom";
+import './countDown.css';
 
-const ContDown: React.FC<{ timeRunOut: () => void }>  = (props) => {
+const ContDown: React.FC<{ 
+  // timeRunOut: () => void 
+}>  = (props) => {
 
 
   const renderTime = ({ remainingTime }: any) => {

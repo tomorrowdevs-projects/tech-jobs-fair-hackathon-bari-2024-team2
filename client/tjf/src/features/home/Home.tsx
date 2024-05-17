@@ -8,6 +8,7 @@ import "../../shared/design/button/button.scss";
 import "../../index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+import ContDown from "../game/countDown";
 //import WebSocket from "ws";
 
 const ws2 = new WebSocket("ws://localhost:8080");
@@ -34,110 +35,102 @@ const Home: React.FC = () => {
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [rankings, setRankings] = useState([]);
   const [score, setScore] = useState(0);
-  // const audioRef = React.useRef<HTMLAudioElement>(null);
-  // const [isAudioMuted, setIsAudioMuted] = React.useState(false);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+  const [isAudioMuted, setIsAudioMuted] = React.useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
   const [username, setUsername] = React.useState<string | null>(null);
   // const [addressIp, setAddressIp] = React.useState<string | null>(null);
 
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
+  useEffect(
+    () => {
+      const ws = new WebSocket("ws://localhost:8080");
 
-    ws.onopen = () => {
-      console.log("Connessione WebSocket aperta nella pagina Home");
-      setWebSocket(ws);
-      setConnected(true);
-    };
+      ws.onopen = () => {
+        console.log("Connessione WebSocket aperta nella pagina Home");
+        setWebSocket(ws);
+        setConnected(true);
+      };
 
-    // ws2.onopen = () => {
-    //   console.log("Connessione WebSocket aperta nella pagina Home");
-    //   setWebSocket(ws);
-    //   setConnected(true);
-    //   // toast.success("Connected to the server");
-    // };
+      ws.onmessage = (event) => {
+        console.log("onmessage--------------");
 
-    // ws.onmessage = (event) => {
-    //   const infoForUser = JSON.parse(event.data);
+        const data = JSON.parse(event.data);
+        console.log(data);
 
-    //   console.log(
-    //     "Messaggio ricevuto dal server WebSocket nella pagina Home:",
-    //     infoForUser
-    //   );
-    // };
+        switch (data.type) {
+          case "connected":
+            setUserId(data.userId);
+            break;
+          case "error":
+            toast.error(data.message);
+            break;
+          case "master":
+            setMaster(true);
+            break;
+          case "start-enabled":
+            setStartEnabled(true);
+            break;
+          case "userList":
+            console.log("userList");
+            setUsers(data.users);
+            console.log(users);
 
-    ws.onmessage = (event) => {
-      console.log("onmessage--------------");      
+            break;
+          case "question":
+            setQuestion(data.question);
+            setChoices(data.choices);
+            setSelectedAnswer("");
+            break;
+          case "score":
+            if (data.userId === userId) {
+              setScore(data.score);
+              toast.info(`Your score for this question: ${data.score}`);
+            }
+            break;
+          case "ranking":
+            setRankings(data.rankings);
+            break;
+          default:
+            break;
+        }
+      };
 
-      const data = JSON.parse(event.data);
-      console.log(data.type);
-      
-      switch (data.type) {
-        case "connected":
-          setUserId(data.userId);
-          break;
-        case "error":
-          toast.error(data.message);
-          break;
-        case "master":
-          setMaster(true);
-          break;
-        case "start-enabled":
-          setStartEnabled(true);
-          break;
-        case "userList":
-          console.log('userList');
-          setUsers(data.users);
-          console.log(data);
-          
-          break;
-        case "question":
-          setQuestion(data.question);
-          setChoices(data.choices);
-          setSelectedAnswer("");
-          break;
-        case "score":
-          if (data.userId === userId) {
-            setScore(data.score);
-            toast.info(`Your score for this question: ${data.score}`);
-          }
-          break;
-        case "ranking":
-          setRankings(data.rankings);
-          break;
-        default:
-          break;
-      }
-    };
+      ws.onclose = () => {
+        console.log("Connessione WebSocket chiusa nella pagina Home");
+      };
 
-    ws.onclose = () => {
-      console.log("Connessione WebSocket chiusa nella pagina Home");
-    };
+      return () => {
+        ws.close();
+        console.log("CHIUSO");
+      };
+    },
+    [
+      // userId
+    ]
+  ); //end useEffect
 
-    //   return () => {
-    //   ws.close();
-    // };
-
-    return () => {
-      ws.close();
-      console.log("CHIUSO");
-    };
-  }, [
-    // userId
-  ]); //end useEffect
-
-  const handleSetUsername = () => {    
+  const handleSetUsername = () => {
     if (username && username.trim() === "") {
       toast.error("Username cannot be empty");
       return;
     }
-    webSocket && webSocket.send(JSON.stringify({ type: "setUsername", username }));
+    webSocket &&
+      webSocket.send(JSON.stringify({ type: "setUsername", username }));
   };
 
   const handleStartGame = () => {
     if (master) {
-      ws2.send(JSON.stringify({ type: "start", userId, category:"any", difficulty:"any", qtype:"any" }));
+      ws2.send(
+        JSON.stringify({
+          type: "start",
+          userId,
+          category: "any",
+          difficulty: "any",
+          qtype: "any",
+        })
+      );
     }
   };
 
@@ -153,43 +146,22 @@ const Home: React.FC = () => {
     );
   };
 
-  //const toggleAudio = () => {
-  //  setIsAudioMuted((prevState) => !prevState);
-  //  if (audioRef.current) {
-  //    if (audioRef.current.paused) {
-  //      audioRef.current.play();
-  //    } else {
-  //      audioRef.current.pause();
-  //    }
-  //  }
-  //};
+  const toggleAudio = () => {
+    setIsAudioMuted((prevState) => !prevState);
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  };
 
-  // useEffect(() => {
-
-  //const ws = new WebSocket("ws://localhost:8080");
-
-  // ws.onopen = () => {
-  //   console.log("Connessione WebSocket aperta nella pagina Home");
-  //   setWebSocket(ws);
-  // };
-
-  // ws.onmessage = (event) => {
-  //   const infoForUser = JSON.parse(event.data);
-
-  //   console.log(
-  //     "Messaggio ricevuto dal server WebSocket nella pagina Home:",
-  //     infoForUser
-  //   );
-  // };
-
-  // ws.onclose = () => {
-  //   console.log("Connessione WebSocket chiusa nella pagina Home");
-  // };
-
-  // return () => {
-  //   ws.close();
-  // };
-  //}, []);
+  const handleKeyPress = (event:any) => {
+    if(event.key === 'Enter'){
+      handleSetUsername();
+    }
+  }
 
   return (
     <>
@@ -198,41 +170,54 @@ const Home: React.FC = () => {
           <img className="logo" src="./logoquiz.jpeg" alt="" />
         </div>
 
+        <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" />
+
+        <div className="audio-toggle" onClick={toggleAudio}>
+          {isAudioMuted ? (
+            <FontAwesomeIcon icon={faVolumeHigh} />
+          ) : (
+            <FontAwesomeIcon icon={faVolumeXmark} />
+          )}
+        </div>
+
         <ToastContainer />
+        {/* <ContDown></ContDown> */}
 
         {!connected && <p>Connecting to server...</p>}
-        {connected 
-        // && !username 
-        && (
+        {connected && !userId && (
+          // && !username
           <div>
             <input
               type="text"
               placeholder="Enter your username"
-              // value={username}
-              // onChange={(e) => setUsername(e.target.value)}
-              onChange={(e: any) => {setUsername(e.target.value);}}
+              onKeyUp={handleKeyPress}
+              onChange={(e: any) => {
+                setUsername(e.target.value);
+              }}
             />
             <button onClick={handleSetUsername}>Join Game</button>
           </div>
         )}
 
-        {
-        username && (
+        {username && (
           <div>
             <h1>Welcome, {username}</h1>
             <div>
               <h2>Users in the lobby:</h2>
+              <h3>wait for the first player to start the game</h3>
               <ul>
                 {users.map((user: userModel) => (
                   <li key={user.id}>{user.username}</li>
                 ))}
               </ul>
-              {master && (
+              {master && 
+              // !question && 
+              (
                 <div>
                   <button onClick={handleStartGame} disabled={!startEnabled}>
                     Start Game
                   </button>
-                  <p>Waiting for more players to join...</p>
+                  {!startEnabled && <p>Waiting for more players to join...</p>}
                 </div>
               )}
             </div>
@@ -270,16 +255,6 @@ const Home: React.FC = () => {
         )}
       </div>
       {/* end div className="App" */}
-
-      {/* <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" /> */}
-
-      {/* <div className="audio-toggle" onClick={toggleAudio}>
-        {isAudioMuted ? (
-          <FontAwesomeIcon icon={faVolumeHigh} />
-        ) : (
-          <FontAwesomeIcon icon={faVolumeXmark} />
-        )}
-      </div> */}
     </>
   );
 };
