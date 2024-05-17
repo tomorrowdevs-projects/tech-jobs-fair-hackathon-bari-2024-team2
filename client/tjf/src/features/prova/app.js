@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+// import './App.css';
 
 const socket = new WebSocket('ws://localhost:8080');
 
-function App() {
+function AppTJ() {
   const [connected, setConnected] = useState(false);
   const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('');
@@ -19,9 +19,15 @@ function App() {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
+    // socket.onopen = () => {
+    //   setConnected(true);
+    //   toast.success('Connected to the server');
+    // };
+
     socket.onopen = () => {
+      console.log("Connessione WebSocket aperta nella pagina Home");
+      // setWebSocket(ws);
       setConnected(true);
-      toast.success('Connected to the server');
     };
 
     socket.onmessage = (event) => {
@@ -61,11 +67,15 @@ function App() {
       }
     };
 
+    socket.onclose = () => {
+      console.log("Connessione WebSocket chiusa nella pagina Home");
+    };
+
     return () => {
       socket.close();
     };
   }, [userId]);
-
+///
   const handleSetUsername = () => {
     if (username.trim() === '') {
       toast.error('Username cannot be empty');
@@ -82,7 +92,7 @@ function App() {
 
   const handleAnswerSubmit = (choice) => {
     setSelectedAnswer(choice);
-    socket.send(JSON.stringify({ type: 'answer', userId, answer: choice, questionIndex: questionIndex }));
+    socket.send(JSON.stringify({ type: 'answer', userId, answer: choice, questionIndex: 'questionIndex' }));
   };
 
   return (
@@ -147,8 +157,8 @@ function App() {
           </ul>
         </div>
       )}
-    </div>
+    </div>//////////
   );
-}
+}////
 
-export default App;
+export default AppTJ;

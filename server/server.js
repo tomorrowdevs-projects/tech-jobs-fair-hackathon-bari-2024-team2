@@ -1,145 +1,196 @@
-const WebSocket = require('ws');
-const fetch = require('node-fetch');
+const WebSocket = require('ws'); // Assuming you are using Node.js with the 'ws' library
 
-var questionsForUser = [];
-var questionsFromFetch = [];
-
-const wss = new WebSocket.Server({ port: 8080 }); // Il server WebSocket ascolterà sulla porta 8080
-//const wss = new WebSocket("ws://localhost:8081");
-const players = [];
+// Store connected users, lobby state, and user scores
+let users = [];
 let master = null;
-
-wss.on('connection', (ws) => {
-  console.log('Nuova connessione WebSocket');
-
-  ws.on('message', async (message) => {
-    console.log(`Ricevuto messaggio: ${message}`);
-
-    try {
-      const data = JSON.parse(message);
-      //console.log('data da user');
-      //console.log(data);
-      if (data.typeRequest === 'join') {
-        // Quando un nuovo giocatore si unisce, aggiungi i suoi dettagli
-        const { userName, addressIp } = data;
-        const userId = Date.now();
-        players.push({ userName, userId, ws, addressIp, socet:0 });
-        //console.log('players');
-        //console.log(players);
-        if (!master) {
-          master = userId;
-          ws.send(JSON.stringify({ type: 'master', message: `Benvenuto, ${userName}!` }));
-        }
-        else ws.send(JSON.stringify({ type: 'connected', message: `Benvenuto, ${userName}!` }));
-        //console.log(`Giocatore ${userName} con IP ${indirizzoIp} si è collegato.`);
-      } else if (data.typeRequest === 'start') {
-        const { category, difficulty, type } = data;
-
-        const categoryParam = category !== 'any' ? `&category=${category}` : '';
-        const difficultyParam = difficulty !== 'any' ? `&difficulty=${difficulty}` : '';
-        const typeParam = type !== 'any' ? `&type=${type}` : '';
-
-        const url = `https://opentdb.com/api.php?amount=10${categoryParam}${difficultyParam}${typeParam}`;
-
-        const response = await fetch(url);
-        const triviaData = await response.json();
-        //console.log('triviaData');
-        //console.log(triviaData);
-
-        if (triviaData.response_code === 0) {
-          questionsFromFetch = triviaData.results;
-          console.log('questionsFromFetch');
-          console.log(typeof questionsFromFetch);
-          console.log(questionsFromFetch[0]);
-          questionsForUser = triviaData.results.map((question) => ({
-            type: question.type,
-            question: question.question,
-            answers: shuffle([...question.incorrect_answers, question.correct_answer]),
-          }));
-
-          questionsForUser = Object.keys(questionsForUser).map((key) => [key, questionsForUser[key]]);
-          //console.log('questionsForUser');
-          //console.log(typeof questionsForUser);
-          //console.log(questionsForUser[0]);
-          //console.log(questionsForUser.length);
-          const question = questionsForUser[0];
-
-          // Invia le domande al giocatore che ha richiesto il nuovo gioco
-          ws.send(JSON.stringify({ type: 'questions', number: 0, question }));
-        } else if (data.typeRequest === 'next'){
-          const { number, answer, score, addressIp } = data;
-          if(answer === questionsForUser[number]) console.log('ok');
-        } else {
-          ws.send(JSON.stringify({ type: 'error', message: 'Errore nel recupero delle domande dal server Open Trivia DB' }));
-        }
-      }
-    } catch (error) {
-      console.error('Errore durante il processing del messaggio:', error);
-      ws.send(JSON.stringify({ type: 'error', message: 'Errore durante il processing del messaggio' }));
-    }
-  });
-
-  ws.on('close', () => {
-    // Rimuovi il giocatore disconnesso dall'oggetto players
-    for (const userName in players) {
-      if (players[userName].ws === ws) {
-        console.log(`Giocatore ${userName} disconnesso.`);
-        delete players[userName];
-        break;
-      }
-    }
-  });
-});
-
-// async function fetchData() {
-//   let url = 'https://opentdb.com/api.php?amount=10';
-
-//   // if (category) {
-//   //     url += &category=${category};
-//   // }
-//   // if (difficulty) {
-//   //     url += &difficulty=${difficulty};
-//   // }
-//   // if (type) {
-//   //     url += &type=${type};
-//   // }
-
-//   try {
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     return data;  // Save the JSON data into a variable
-//   } catch (error) {
-//     console.error('Error:', error);
-//     return null;  // Handle the error by returning null or an appropriate value
-//   }
-// }
-
-// fetchData().then(data => {
-//   const questions = [];
-//   if (data) {
-//     for (let index = 0; index < data.results.length; index++) {
-//       const tempArray = [...data.results[index].incorrect_answers];
-//       tempArray.push(data.results[index].correct_answer);
-//       const tempObj = {
-//         answer: shuffle(tempArray),
-//         type: data.results[index].type,
-//         difficulty: data.results[index].difficulty,
-//         category: data.results[index].category,
-//         question: data.results[index].question,
-//       };
-//       questions.push(tempObj);
-//     }
-//     questionsForUser = [...questions];
-//   }
-// });
+let gameStarted = false;
+let scores = {};
 
 // Function to shuffle an array
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-console.log('Server WebSocket in ascolto sulla porta 8080');
+// Function to send the updated rankings to all users
+function sendRankings() {
+    const rankings = Object.entries(scores).map(([userId, score]) => 
+        (
+            { 
+                userId, 
+                username: getUserById(userId).username, 
+                score 
+            }
+        ));
+    rankings.sort((a, b) => b.score - a.score); // Sort by score descending
+
+    const message = {
+        type: 'ranking',
+        rankings: rankings
+    };
+
+    users.forEach(user => user.websocket.send(JSON.stringify(message)));
+}
+
+// Function to get user by ID
+function getUserById(userId) {    
+    return users.find(user => user.id == userId);
+}
+
+// Function to send the updated user list to all users
+function sendUserList() {
+    const userList = users.map(user => ({ id: user.id, username: user.username }));
+
+    const message = {
+        type: 'userList',
+        users: userList
+    };
+
+    users.forEach(user => user.websocket.send(JSON.stringify(message)));
+}
+
+// Function to handle sending questions and collecting responses
+async function sendQuestions(questions) {
+    for (const question of questions) {
+        let choices;
+        if (question.type === 'boolean') {
+            choices = ['True', 'False'];
+        } else {
+            choices = shuffle([...question.incorrect_answers, question.correct_answer]);
+        }
+
+        // Send the question and choices to the users
+        const message = {
+            type: 'question',
+            question: question.question,
+            choices: choices,
+            questionIndex: questions.indexOf(question) // Include index for tracking
+        };
+        users.forEach(user => user.websocket.send(JSON.stringify(message)));
+
+        const userResponses = {};
+        const startTime = Date.now();
+
+        // Function to handle user response
+        const handleUserResponse = (userId, userAnswer) => {
+            const timeUsed = (Date.now() - startTime) / 1000;
+            let score = 0;
+            if (userAnswer === question.correct_answer) {
+                score = 1000 * (timeUsed / 30);
+            }
+            userResponses[userId] = score;
+            // Update the user's score
+            scores[userId] = (scores[userId] || 0) + score;
+            // Send the score back to the user
+            users.find(user => user.id == userId).websocket.send(JSON.stringify({ type: 'score', userId, score, questionIndex: message.questionIndex }));
+        };
+
+        // Set up a 30-second timeout to move to the next question
+        await new Promise(resolve => {
+            const timeout = setTimeout(() => {
+                resolve();
+            }, 30000); // 30 seconds
+
+            // Listen for user responses
+            users.forEach(user => {
+                user.websocket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'answer' && data.questionIndex === message.questionIndex) {
+                        handleUserResponse(data.userId, data.answer);
+                        // If all users have responded, clear the timeout and resolve
+                        if (Object.keys(userResponses).length === users.length) {
+                            clearTimeout(timeout);
+                            resolve();
+                        }
+                    }
+                };
+            });
+        });
+
+        // Send the updated rankings after each question
+        sendRankings();
+
+        // Wait 5 seconds before moving to the next question
+        await new Promise(resolve => setTimeout(resolve, 5000)); // 5 seconds delay
+    }
+
+    // Reset scores after the game ends
+    scores = {};
+}
+
+// Example WebSocket connection and handling
+const websocketServer = new WebSocket.Server({ port: 8080 });
+
+websocketServer.on('connection', (websocket) => {
+    console.log("server on");
+    let userId = Date.now();
+    let username;
+
+    websocket.on('message', async (message) => {
+        const data = JSON.parse(message);
+        // Handle username assignment
+        if (data.type === 'setUsername') {
+
+            if (users.some(user => user.username === data.username)) {
+                websocket.send(JSON.stringify({ type: 'error', message: 'Username already taken' }));
+            } else {
+                username = data.username;
+                users.push({ id: userId, username, websocket });
+                scores[userId] = 0;  // Initialize the user's score
+
+                if (!master) {
+                    master = userId;
+                    
+                    websocket.send(JSON.stringify({ type: 'master' }));
+                }
+
+                websocket.send(JSON.stringify({ type: 'connected', userId, username }));
+                sendUserList();
+
+                if (users.length > 1 && master) {
+                    const masterSocket = users.find(user => user.id === master).websocket;
+                    masterSocket.send(JSON.stringify({ type: 'start-enabled' }));
+                }
+            }
+        }
+
+        // Handle starting the game
+        if (data.type === 'start' && data.userId === master && users.length > 1 && !gameStarted) {
+            gameStarted = true;
+            const questionsData = await fetchData(data);
+            if (questionsData) {
+                await sendQuestions(questionsData.results);
+            }
+            gameStarted = false;
+            sendUserList(); // Update the user list after the game ends
+        }
+    });
+
+    websocket.on('close', () => {
+        users = users.filter(user => user.id !== userId);
+        delete scores[userId];  // Remove the user's score
+        sendUserList();
+
+        if (userId === master) {
+            if (users.length > 0) {
+                master = users[0].id;
+                users[0].websocket.send(JSON.stringify({ type: 'master' }));
+            } else {
+                master = null;
+            }
+        }
+    });
+});
+
+async function fetchData(data) {
+    
+    const categoryParam = data.category !== 'any' ? `&category=${data.category}` : '';
+    const difficultyParam = data.difficulty !== 'any' ? `&difficulty=${data.difficulty}` : '';
+    const typeParam = data.qtype !== 'any' ? `&type=${data.qtype}` : '';
+    const url = `https://opentdb.com/api.php?amount=10${categoryParam}${difficultyParam}${typeParam}`;
+    const response = await fetch(url);
+    return response.json();
+}
