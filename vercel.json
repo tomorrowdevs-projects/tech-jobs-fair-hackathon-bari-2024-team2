@@ -1,16 +1,18 @@
 {
   "version": 2,
-
-  "routes": [
+  "builds": [
     {
-      "src": "/api/(.*)", 
-      "dest": "server/server.js" 
+      "src": "client/tjf/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
     },
     {
-      "src": "/(.*)", 
-      "dest": "client/tjf/$1"
+      "src": "server/server.js",
+      "use": "@vercel/node"
     }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server/server.js" },
+    { "src": "/(.*)", "dest": "/client/$1" }
   ]
 }
-
-
