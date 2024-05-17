@@ -7,7 +7,7 @@ import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import "../../shared/design/button/button.scss";
 import "../../index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+//import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import ContDown from "../game/countDown";
 //import WebSocket from "ws";
 
@@ -184,7 +184,7 @@ const Home: React.FC = () => {
           <img className="logo" src="./logoquiz.jpeg" alt="" />
         </div>
 
-        <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" />
+        {/* <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" />
 
         <div className="audio-toggle" onClick={toggleAudio}>
           {isAudioMuted ? (
@@ -192,7 +192,7 @@ const Home: React.FC = () => {
           ) : (
             <FontAwesomeIcon icon={faVolumeXmark} />
           )}
-        </div>
+        </div> */}
 
         <ToastContainer />
         {/* <ContDown></ContDown> */}
@@ -219,13 +219,16 @@ const Home: React.FC = () => {
           <div>
             <h1>Welcome, {username}</h1>
             <div>
-              <h2>Users in the lobby:</h2>
               <h3>wait for the first player to start the game</h3>
-              <ul>
+              <h2>Users in the lobby:</h2>
+              <ul className="users-list">
                 {users.map((user: userModel) => (
                   <li key={user.id}>{user.username}</li>
                 ))}
               </ul>
+
+
+
               {master && 
               rankings.length < 1 && 
               (
@@ -251,7 +254,7 @@ const Home: React.FC = () => {
             justifyContent: "center",
             alignItems: "center",
             fontSize: "30px",
-          }}>Ecco la tua domanda!</h3>
+          }}>Here's your question!</h3>
 
 
            <div className="question-container">
@@ -268,7 +271,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="answer-section">
-          <h3>Scegli la tua risposta</h3>
+          <h3>Choose your answer</h3>
           </div>
 
               <ul className="answer-list">
@@ -292,7 +295,7 @@ const Home: React.FC = () => {
         {rankings.length > 0 && (
           <div>
             <h2>Rankings</h2>
-            <ul>
+            <ul className="rankings-list">
               {rankings.map((rank: rankModel, index) => (
                 <li key={rank.userId}>
                   {index + 1}. {rank.username}: {rank.score}

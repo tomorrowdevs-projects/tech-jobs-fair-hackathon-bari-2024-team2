@@ -43,7 +43,7 @@ const Question: React.FC<{ onAnswerSubmit: (answer: string) => void }> = (props)
 
           <div className="question-content">
 
-            <h4>{question}</h4>
+            <h4>{questionForUser.question}</h4>
           </div>
 
       </div>

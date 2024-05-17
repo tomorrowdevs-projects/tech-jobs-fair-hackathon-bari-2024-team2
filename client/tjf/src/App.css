@@ -243,4 +243,18 @@
   cursor: pointer; 
   text-decoration:none; 
 }
+
+.text-button-custom:disabled {
+  cursor: not-allowed; 
+  color: gray; 
+}
+
+.rankings-list {
+  list-style-type: none;
   
+}
+
+.users-list {
+  list-style-type: none;
+  
+}
