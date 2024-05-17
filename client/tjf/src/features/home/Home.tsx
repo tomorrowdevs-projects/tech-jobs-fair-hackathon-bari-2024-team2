@@ -303,7 +303,6 @@ const Home: React.FC = () => {
           </div>
         )}
 
-
         {/* RANKING SECTION */}
 
         {rankings.length > 0 && (
@@ -319,24 +318,29 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
+
+      <div>
+<footer>
+<div className="footer-content">
+<p>tech-jobs-fair-hackathon-bari-2024-team2</p>
+
+</div>
+</footer>
+</div>
+      
       {/* end div className="App" */}
+     
+      
     </>
+    
   );
+
+
 };
 
 
 
-<div className="card">
-  <div className="card-header">
-    Quote
-  </div>
-  <div className="card-body">
-    <blockquote className="blockquote mb-0">
-      <p>A well-known quote, contained in a blockquote element.</p>
-      <footer className="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
-    </blockquote>
-  </div>
-</div>
+
 
 
 export default Home;
