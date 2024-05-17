@@ -16,9 +16,9 @@ const ContDown: React.FC<{
 
     return (
       <div className="timer">
-        <div className="text countdowntext">Remaining</div>
+        <div className="countdowntext">Remaining</div>
         <div className="value">{remainingTime}</div>
-        <div className="text countdowntext">seconds</div>
+        <div className="countdowntext">seconds</div>
       </div>
     );
   };
