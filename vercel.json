@@ -2,17 +2,25 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/tjf/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
-    },
-    {
       "src": "server/server.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "client/tjf/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "client/tjf/build"
+      }
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server/server.js" },
-    { "src": "/(.*)", "dest": "/client/$1" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/tjf/build/$1"
+    }
   ]
 }

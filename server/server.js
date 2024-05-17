@@ -1,5 +1,15 @@
 const WebSocket = require('ws');
-const fetch = require('node-fetch');
+//const fetch = require('node-fetch');
+
+
+
+import('node-fetch').then(fetch => {
+  // Utilizza fetch qui all'interno di questa Promise
+  // Ad esempio, puoi definire la logica del tuo server qui dentro
+}).catch(error => {
+  // Gestisci eventuali errori nell'importazione del modulo
+  console.error('Error importing node-fetch:', error);
+});
 
 var questionsForUser = [];
 var questionsFromFetch = [];
