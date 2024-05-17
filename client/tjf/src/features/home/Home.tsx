@@ -7,7 +7,7 @@ import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import "../../shared/design/button/button.scss";
 import "../../index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
+//import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import ContDown from "../game/countDown";
 //import WebSocket from "ws";
 
@@ -193,7 +193,7 @@ const Home: React.FC = () => {
           <img className="logo" src="./logoquiz.jpeg" alt="" />
         </div>
 
-        <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" />
+        {/* <audio ref={audioRef} src="/backgroundmusic.mp3" loop preload="auto" />
 
         <div className="audio-toggle" onClick={toggleAudio}>
           {isAudioMuted ? (
@@ -201,14 +201,14 @@ const Home: React.FC = () => {
           ) : (
             <FontAwesomeIcon icon={faVolumeXmark} />
           )}
-        </div>
+        </div> */}
 
         <ToastContainer />
         {onCountDown && <ContDown></ContDown>}
         {!connected && <p>Connecting to server...</p>}
         {connected && !userId && (
           // && !username
-          <div>
+          <div className="centered-container">
             <input
               type="text"
               placeholder="Enter your username"
@@ -216,46 +216,77 @@ const Home: React.FC = () => {
               onChange={(e: any) => {
                 setUsername(e.target.value);
               }}
+              className="styled-input"
             />
-            <button onClick={handleSetUsername}>Join Game</button>
+
+            <button onClick={handleSetUsername} className="button-19">
+              Join Game
+            </button>
           </div>
         )}
 
         {username && !isGameStart && (
           <div>
             <h1>Welcome, {username}</h1>
+
             <div>
-              <h2>Users in the lobby:</h2>
-              <h3>wait for the first player to start the game</h3>
-              <ul>
-                {users.map((user: userModel) => (
-                  <li key={user.id}>{user.username}</li>
-                ))}
-              </ul>
-              {master && (
-                <div>
-                  <button onClick={handleStartGame} disabled={!startEnabled}>
+              {master && rankings.length < 1 && (
+                <div className="centered-container">
+                  <button
+                    className="button-19"
+                    onClick={handleStartGame}
+                    disabled={!startEnabled}
+                  >
                     Start Game
                   </button>
                   {!startEnabled && <p>Waiting for more players to join...</p>}
                 </div>
               )}
+
+              <h3>wait for the first player to start the game</h3>
+              <h2>Users in the lobby:</h2>
+              <ul className="users-list">
+                {users.map((user: userModel) => (
+                  <li key={user.id}>{user.username}</li>
+                ))}
+              </ul>
             </div>
           </div>
         )}
+
+        {/* QUESTION SECTION */}
+
         {question && (
           <div>
-            <h2>
-              Domanda Numero{" "}
+            <h3
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "30px",
+              }}
+            >
+              Question number{" "}
               {questionIndex && questionIndex === 0 ? 1 : questionIndex + 1}
-            </h2>
-            <div></div>
-            <h2>{question}</h2>
-            <div></div>
-            <ul>
+            </h3>
+
+            <div className="question-container">
+              <div className="question-header"></div>
+
+              <div className="question-content">
+                <h4>{question}</h4>
+              </div>
+            </div>
+
+            <div className="answer-section">
+              <h3>Choose your answer</h3>
+            </div>
+
+            <ul className="answer-list">
               {choices.map((choice) => (
-                <li key={choice}>
+                <li key={choice} className="answer-item">
                   <button
+                    className="text-button-custom"
                     onClick={() => handleAnswerSubmit(choice)}
                     disabled={!!selectedAnswer}
                   >
@@ -267,10 +298,12 @@ const Home: React.FC = () => {
           </div>
         )}
 
+        {/* RANKING SECTION */}
+
         {rankings.length > 0 && (
           <div>
             <h2>Rankings</h2>
-            <ul>
+            <ul className="rankings-list">
               {rankings.map((rank: rankModel, index) => (
                 <li key={rank.userId}>
                   {index + 1}. {rank.username}: {rank.score}
@@ -280,6 +313,15 @@ const Home: React.FC = () => {
           </div>
         )}
       </div>
+
+      <div>
+        <footer>
+          <div className="footer-content">
+            <p>tech-jobs-fair-hackathon-bari-2024-team2</p>
+          </div>
+        </footer>
+      </div>
+
       {/* end div className="App" */}
     </>
   );

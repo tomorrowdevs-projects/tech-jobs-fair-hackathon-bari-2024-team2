@@ -33,14 +33,25 @@ const Question: React.FC<{ onAnswerSubmit: (answer: string) => void }> = (props)
             alignItems: "center",
             fontSize: "30px",
           }}>Ecco la tua domanda!</h3>
+
+
       <div className="question-container">
-        <div className="question-header">
-        </div>
-        <div className="question-content">
-          <h4>{questionForUser.question}</h4>
-        </div>
+
+          <div className="question-header">
+            
+          </div>
+
+          <div className="question-content">
+
+            <h4>{questionForUser.question}</h4>
+          </div>
+
       </div>
+
+
+
       <div>
+        
         <div className="answer-section">
           <h3>Scegli la tua risposta</h3>
         </div>

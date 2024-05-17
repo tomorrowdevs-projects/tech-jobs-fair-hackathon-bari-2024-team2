@@ -43,6 +43,7 @@ code {
     height: auto; /* Impedisce la distorsione mantenendo l'aspetto proporzionale */
     border-radius: 20%;
     margin-top: 15px;
+    margin-bottom: 15px;
   
   
 }
