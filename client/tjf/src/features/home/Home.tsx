@@ -201,6 +201,7 @@ const Home: React.FC = () => {
         {connected && !userId && (
           // && !username
           <div className="centered-container">
+            
             <input
               type="text"
               placeholder="Enter your username"
@@ -208,7 +209,9 @@ const Home: React.FC = () => {
               onChange={(e: any) => {
                 setUsername(e.target.value);
               }}
+              className="styled-input"
             />
+          
             <button onClick={handleSetUsername} className="button-19">Join Game</button>
           </div>
         )}
@@ -218,7 +221,22 @@ const Home: React.FC = () => {
       ) && (
           <div>
             <h1>Welcome, {username}</h1>
+
+
             <div>
+
+
+            {master && 
+              rankings.length < 1 && 
+              (
+                <div className="centered-container">
+                  <button className="button-19" onClick={handleStartGame} disabled={!startEnabled}>
+                    Start Game
+                  </button> 
+                  {!startEnabled && <p>Waiting for more players to join...</p>}
+                </div>
+              )}
+
               <h3>wait for the first player to start the game</h3>
               <h2>Users in the lobby:</h2>
               <ul className="users-list">
@@ -229,17 +247,11 @@ const Home: React.FC = () => {
 
 
 
-              {master && 
-              rankings.length < 1 && 
-              (
-                <div className="centered-container">
-                  <button className="button-19" onClick={handleStartGame} disabled={!startEnabled}>
-                    Start Game
-                  </button> 
-                  {!startEnabled && <p>Waiting for more players to join...</p>}
-                </div>
-              )}
+
+             
+
             </div>
+            
           </div>
         )}
 
@@ -254,7 +266,8 @@ const Home: React.FC = () => {
             justifyContent: "center",
             alignItems: "center",
             fontSize: "30px",
-          }}>Here's your question!</h3>
+          }}>Question number {questionIndex && questionIndex === 0? 1: questionIndex + 1}</h3>
+          
 
 
            <div className="question-container">
@@ -271,7 +284,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="answer-section">
-          <h2>Question number {questionIndex && questionIndex + 1}</h2>
+          
           <h3>Choose your answer</h3>
           </div>
 
@@ -310,5 +323,20 @@ const Home: React.FC = () => {
     </>
   );
 };
+
+
+
+<div className="card">
+  <div className="card-header">
+    Quote
+  </div>
+  <div className="card-body">
+    <blockquote className="blockquote mb-0">
+      <p>A well-known quote, contained in a blockquote element.</p>
+      <footer className="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+    </blockquote>
+  </div>
+</div>
+
 
 export default Home;

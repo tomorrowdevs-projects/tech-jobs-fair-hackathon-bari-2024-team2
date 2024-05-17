@@ -5,6 +5,7 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -209,8 +210,9 @@
 }
 
 .button-19:disabled {
- 
+  cursor: not-allowed;
   color: red;
+ 
 }
 
 .button-19:active {
@@ -258,3 +260,20 @@
   list-style-type: none;
   
 }
+
+.styled-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.styled-input:focus {
+  border-color: dodgerblue;
+
+}
+
+
+
