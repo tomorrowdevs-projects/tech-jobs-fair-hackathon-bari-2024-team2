@@ -239,7 +239,7 @@ const Home: React.FC = () => {
         )}
         {question && (
           <div>
-            <h2>Domanda Numero {questionIndex}++</h2>
+            <h2>Domanda Numero {questionIndex && questionIndex + 1}</h2>
             <div></div>
             <h2>{question}</h2>
             <div></div>
