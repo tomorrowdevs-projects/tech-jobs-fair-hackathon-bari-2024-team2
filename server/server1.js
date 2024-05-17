@@ -142,4 +142,5 @@ function shuffle(array) {
   return array;
 }
 
+
 console.log('Server WebSocket in ascolto sulla porta 8080');
