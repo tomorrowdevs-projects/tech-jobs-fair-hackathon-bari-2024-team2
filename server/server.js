@@ -173,6 +173,7 @@ websocketServer.on('connection', (websocket) => {
         if (data.type === 'start' && data.userId === master && users.length > 1 && !gameStarted) {
             gameStarted = true;
             const questionsData = await fetchData(data);
+            console.log(questionsData);
             if (questionsData) {
                 await sendQuestions(questionsData.results);
             }
