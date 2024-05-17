@@ -37,7 +37,7 @@ const Home: React.FC = () => {
   const [score, setScore] = useState(0);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
-  const [questionIndex, setQuestionIndex] = React.useState();
+  const [questionIndex, setQuestionIndex] = React.useState<number>(0);
   const [isGameStart, setIsGameStart] = React.useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);

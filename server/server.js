@@ -91,7 +91,7 @@ async function sendQuestions(questions) {
             const timeUsed = (Date.now() - startTime) / 1000;
             let score = 0;
             if (userAnswer === question.correct_answer) {
-                score = 1000 * (timeUsed / 30);
+                score = 1000 * ((30-timeUsed) / 30);
             }
             userResponses[userId] = score;
             // Update the user's score
