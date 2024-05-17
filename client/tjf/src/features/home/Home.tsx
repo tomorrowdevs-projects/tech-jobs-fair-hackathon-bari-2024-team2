@@ -88,6 +88,11 @@ const Home: React.FC = () => {
         console.log("onmessage--------------");
 
         const data = JSON.parse(event.data);
+        console.log('question');
+        console.log(question);
+        console.log('rankings');
+        console.log(rankings);
+        
         console.log(data);
 
         switch (data.type) {
@@ -242,7 +247,7 @@ const Home: React.FC = () => {
                 ))}
               </ul>
               {master && 
-              // !question && 
+              rankings.length < 1 && 
               (
                 <div>
                   <button onClick={handleStartGame} disabled={!startEnabled}>
