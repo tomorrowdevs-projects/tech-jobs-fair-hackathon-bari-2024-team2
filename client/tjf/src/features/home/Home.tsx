@@ -1,4 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../../App.css";
+
 import ButtonComponent from "../../shared/design/button/ButtonComponent";
 import "../../shared/design/button/button.scss";
 import "../../index.css";
@@ -6,6 +10,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeXmark, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import ContDown from "../game/countDown";
 //import WebSocket from "ws";
+
+const ws2 = new WebSocket("ws://localhost:8080");
+
+interface userModel {
+  id: string;
+  username: string;
+}
+interface rankModel {
+  userId: string;
+  username: string;
+  score: string;
+}
 
 const Home: React.FC = () => {
   const [connected, setConnected] = useState(false);
@@ -23,56 +39,9 @@ const Home: React.FC = () => {
   const [isAudioMuted, setIsAudioMuted] = React.useState(false);
 
   const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
-  const [userName, setUserName] = React.useState<string | null>(null);
-  const [addressIp, setAddressIp] = React.useState<string | null>(null);
 
-  const toggleAudio = () => {
-    setIsAudioMuted((prevState) => !prevState);
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  };
-
-  const fetchIP = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org");
-      const data = await response.text();
-      setAddressIp(data);
-      // console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const newGame = (e: any) => {
-    // console.log("Sono Azione Uno");
-    if (userName === null) alert("e' necessario inserire un nome");
-    else {
-      const objToServer = {
-        typeRequest: `join`,
-        userName,
-        addressIp,
-      }
-      
-      // console.log('objToServer');
-      // console.log(objToServer);
-      
-      // Verifica se la connessione WebSocket è aperta e webSocket non è null
-      if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-        // Invia un messaggio al server
-        webSocket.send(JSON.stringify(objToServer));
-      } else {
-        console.error("Connessione WebSocket non disponibile o non aperta.");
-      }
-    }
-  };
-  const codeGame = () => {
-    console.log("Sono Azione Due");
-  };
+  const [username, setUsername] = React.useState<string | null>(null);
+  // const [addressIp, setAddressIp] = React.useState<string | null>(null);
 
   useEffect(
     () => {
@@ -222,7 +191,7 @@ const Home: React.FC = () => {
         {!connected && <p>Connecting to server...</p>}
         {connected && !userId && (
           // && !username
-          <div>
+          <div className="centered-container">
             <input
               type="text"
               placeholder="Enter your username"
@@ -231,7 +200,7 @@ const Home: React.FC = () => {
                 setUsername(e.target.value);
               }}
             />
-            <button onClick={handleSetUsername}>Join Game</button>
+            <button onClick={handleSetUsername} className="button-19">Join Game</button>
           </div>
         )}
 
@@ -249,33 +218,65 @@ const Home: React.FC = () => {
               {master && 
               rankings.length < 1 && 
               (
-                <div>
-                  <button onClick={handleStartGame} disabled={!startEnabled}>
+                <div className="centered-container">
+                  <button className="button-19" onClick={handleStartGame} disabled={!startEnabled}>
                     Start Game
-                  </button>
+                  </button> 
                   {!startEnabled && <p>Waiting for more players to join...</p>}
                 </div>
               )}
             </div>
           </div>
         )}
+
+          {/* QUESTION SECTION */}
+
         {question && (
           <div>
-            <h2>{question}</h2>
-            <ul>
-              {choices.map((choice) => (
-                <li key={choice}>
-                  <button
-                    onClick={() => handleAnswerSubmit(choice)}
-                    disabled={!!selectedAnswer}
-                  >
-                    {choice}
-                  </button>
-                </li>
-              ))}
-            </ul>
+
+              <h3 
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "30px",
+          }}>Ecco la tua domanda!</h3>
+
+
+           <div className="question-container">
+
+            <div className="question-header">
+              
+            </div>
+
+            <div className="question-content">
+
+              <h4>{question}</h4>
+            </div>
+
+          </div>
+
+          <div className="answer-section">
+          <h3>Scegli la tua risposta</h3>
+          </div>
+
+              <ul className="answer-list">
+                {choices.map((choice) => (
+                  <li key={choice} className="answer-item">
+                    <button className="text-button-custom"
+                      onClick={() => handleAnswerSubmit(choice)}
+                      disabled={!!selectedAnswer}
+                    >
+                      {choice}
+                    </button>
+                  </li>
+                ))}
+              </ul>
           </div>
         )}
+
+
+        {/* RANKING SECTION */}
 
         {rankings.length > 0 && (
           <div>
