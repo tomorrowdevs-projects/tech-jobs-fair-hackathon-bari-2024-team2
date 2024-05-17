@@ -1,4 +1,16 @@
-const WebSocket = require('ws'); // Assuming you are using Node.js with the 'ws' library
+
+const WebSocket = require('ws');
+//const fetch = require('node-fetch');
+
+
+
+import('node-fetch').then(fetch => {
+    // Utilizza fetch qui all'interno di questa Promise
+    // Ad esempio, puoi definire la logica del tuo server qui dentro
+}).catch(error => {
+    // Gestisci eventuali errori nell'importazione del modulo
+    console.error('Error importing node-fetch:', error);
+});
 
 // Store connected users, lobby state, and user scores
 let users = [];
@@ -17,14 +29,14 @@ function shuffle(array) {
 
 // Function to send the updated rankings to all users
 function sendRankings() {
-    const rankings = Object.entries(scores).map(([userId, score]) => 
-        (
-            { 
-                userId, 
-                username: getUserById(userId).username, 
-                score 
-            }
-        ));
+    const rankings = Object.entries(scores).map(([userId, score]) =>
+    (
+        {
+            userId,
+            username: getUserById(userId).username,
+            score
+        }
+    ));
     rankings.sort((a, b) => b.score - a.score); // Sort by score descending
 
     const message = {
@@ -36,7 +48,7 @@ function sendRankings() {
 }
 
 // Function to get user by ID
-function getUserById(userId) {    
+function getUserById(userId) {
     return users.find(user => user.id == userId);
 }
 
@@ -143,7 +155,7 @@ websocketServer.on('connection', (websocket) => {
 
                 if (!master) {
                     master = userId;
-                    
+
                     websocket.send(JSON.stringify({ type: 'master' }));
                 }
 
@@ -186,7 +198,7 @@ websocketServer.on('connection', (websocket) => {
 });
 
 async function fetchData(data) {
-    
+
     const categoryParam = data.category !== 'any' ? `&category=${data.category}` : '';
     const difficultyParam = data.difficulty !== 'any' ? `&difficulty=${data.difficulty}` : '';
     const typeParam = data.qtype !== 'any' ? `&type=${data.qtype}` : '';

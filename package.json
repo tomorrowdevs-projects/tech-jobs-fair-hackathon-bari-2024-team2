@@ -1,9 +1,16 @@
 {
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.1",
     "@types/react-countdown-circle-timer": "^2.0.1",
+    "node-fetch": "^3.3.2",
     "react-countdown-circle-timer": "^3.2.1",
     "react-toastify": "^10.0.5",
     "ws": "^8.17.0"
