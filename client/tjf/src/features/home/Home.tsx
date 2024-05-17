@@ -284,10 +284,14 @@ const Home: React.FC = () => {
 
             <ul className="answer-list">
               {choices.map((choice) => (
-                <li key={choice} className="answer-item freeman-regular freeman-regular-answer">
+                <li
+                  key={choice}
+                  className="answer-item freeman-regular freeman-regular-answer"
+                  onClick={() => handleAnswerSubmit(choice)}
+                >
                   <button
                     className="text-button-custom"
-                    onClick={() => handleAnswerSubmit(choice)}
+                    // onClick={() => handleAnswerSubmit(choice)}
                     disabled={!!selectedAnswer}
                   >
                     {choice}
